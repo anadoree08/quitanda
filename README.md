@@ -354,14 +354,21 @@ Diagrama de Atividades: Fluxo de atividades para realização de uma funcionalid
 
 #### 5.4.1  Venda
 
+
+
 ```mermaid
-
 flowchart TD
-    Início --> Venda  vetor guardar produto - quitanda model precisar guardar 1 vetor para guadar movimentacoes - 1 vetor produto um vetor movimentacao
-    Venda --> AtualizaEstoque
-    AtualizaEstoque --> Fim
+    Inicio[Início] --> Venda[Venda]
+    Venda --> AtualizaEstoque[Atualiza Estoque]
+    AtualizaEstoque --> Fim[Fim]
 
+    Produto[Produto (vetor)]
+    Movimentacoes[Movimentações (vetor)]
+
+    Venda --> Produto
+    Venda --> Movimentacoes
 ```
+
 
 #### 5.4.1  Entrada
 
