@@ -362,8 +362,8 @@ flowchart TD
     Venda --> AtualizaEstoque[Atualiza Estoque]
     AtualizaEstoque --> Fim[Fim]
 
-    Produto[Produto (vetor)]
-    Movimentacoes[Movimentações (vetor)]
+    Produto[Produto ]
+    Movimentacoes[Movimentações]
 
     Venda --> Produto
     Venda --> Movimentacoes

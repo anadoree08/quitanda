@@ -1,85 +1,89 @@
-//base da estrutura do aplicativo
-//classe responsável pelos dados da quitanda
-
 export class QuitandaModel {
   constructor() {
-    this.produtos = []; // vetor de produtos
-    this.movimentacoes = []; // vetor de movimentações
-    this.currentId = 1; // contador de id
+    this.produtos = [];
+    this.movimentacoes = [];
+    this.currentId = 1;
   }
 
- 
-  // CREATE - adicionar produto
   addProduto(nome, categoria, preco, quantidade) {
+    if (!nome || preco < 0 || quantidade < 0) {
+      return { erro: "Dados inválidos." };
+    }
+
+    const existe = this.produtos.find(
+      (p) => p.nome.toLowerCase() === nome.toLowerCase(),
+    );
+
+    if (existe) {
+      return { erro: "Produto já cadastrado." };
+    }
+
     const novoProduto = {
       id: this.currentId++,
-      nome: nome,
-      categoria: categoria,
-      preco: preco,
-      quantidade: quantidade,
+      nome,
+      categoria,
+      preco,
+      quantidade,
     };
 
     this.produtos.push(novoProduto);
+
+    this.movimentacoes.push({
+      tipo: "entrada",
+      produto: nome,
+      quantidade,
+    });
+
+    return { sucesso: true };
   }
 
-  
-  // READ - listar produtos
   getProdutos() {
     return this.produtos;
-
-    if (nome === "" || preco < 0 || quantidade < 0) {
-      return;
-    }
   }
 
- 
-  // UPDATE - atualizar estoque (entrada)
   atualizarEstoque(id, quantidade) {
     const produto = this.produtos.find((p) => p.id === id);
+    if (!produto) return;
 
-    if (produto) {
-      produto.quantidade += quantidade;
+    produto.quantidade += quantidade;
 
-      // registra movimentação
-      const mov = {
-        tipo: "entrada",
-        produto: produto.nome,
-        quantidade: quantidade,
-      };
-
-      this.movimentacoes.push(mov);
-    }
+    this.movimentacoes.push({
+      tipo: "entrada",
+      produto: produto.nome,
+      quantidade,
+    });
   }
 
-
-  // VENDER produto
   venderProduto(id, quantidade) {
     const produto = this.produtos.find((p) => p.id === id);
 
-    if (produto) {
-      if (produto.quantidade >= quantidade) {
-        produto.quantidade -= quantidade;
-
-        // registra movimentação
-        const mov = {
-          tipo: "venda",
-          produto: produto.nome,
-          quantidade: quantidade,
-        };
-
-        this.movimentacoes.push(mov);
-      }
+    if (!produto) {
+      return { erro: "Produto não encontrado." };
     }
+
+    if (quantidade <= 0) {
+      return { erro: "Quantidade inválida." };
+    }
+
+    if (produto.quantidade < quantidade) {
+      return { erro: "Estoque insuficiente." };
+    }
+
+    produto.quantidade -= quantidade;
+
+    this.movimentacoes.push({
+      tipo: "saida",
+      produto: produto.nome,
+      quantidade,
+    });
+
+    return { sucesso: true };
   }
 
-  
-  // READ - ver movimentações
   getMovimentacoes() {
     return this.movimentacoes;
   }
 
- 
-  // DELETE - remover produto
   removeProduto(id) {
     this.produtos = this.produtos.filter((p) => p.id !== id);
   }

@@ -9,4 +9,3 @@ const view = new QuitandaView(); //cria a view
 const controller = new QuitandaController(model, view); //cria o controller
 
 controller.init(); //iniciar o sistema
-
